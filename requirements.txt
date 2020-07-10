@@ -1,0 +1,5 @@
+pykafka
+kafka-python
+confluent-kafka
+flask
+flask-cors
