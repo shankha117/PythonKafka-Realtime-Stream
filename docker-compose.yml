@@ -1,0 +1,82 @@
+version: "3"
+services:
+  livemap-rest:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+#    image: livemap:v1
+    restart: always
+    ports:
+      - "8081:8081"
+    depends_on:
+      - zookeeper
+    environment:
+      - bootstrap_servers=localhost:9092
+      - topicname=LiveBusData
+      - debugger=True
+    networks:
+      - backend
+    command: "sh run.sh"
+
+  livemap-producer:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: livemap:v1
+    depends_on:
+      - zookeeper
+    restart: always
+    environment:
+      - bootstrap_servers=localhost:9092
+      - topicname=LiveBusData
+      - debugger=True
+    networks:
+      - backend
+    command: "python start_producers.py"
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.3.0-1
+    container_name: zookeeper
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+    volumes:
+        - /var/lib/zookeeper/data:/var/lib/zookeeper/data
+        - /var/lib/zookeeper/log:/var/lib/zookeeper/log
+        - /var/log/zookeeper:/var/log/zookeeper
+
+  kafka:
+    image: confluentinc/cp-kafka:5.3.0-1
+    container_name: kafka
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=localhost
+    ports:
+      - "9092:9092"
+    links:
+      - zookeeper
+    depends_on:
+      - zookeeper
+    command: "bash -c 'echo Waiting for Kafka to be ready... && \
+                       cub kafka-ready -b broker:9092 1 20 && \
+                       kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic orders && \
+                       echo Waiting 60 seconds for Connect to be ready... && \
+                       sleep 60 && \
+                       /tmp/dashboard/docker-combined.sh'"
+networks:
+  backend:
+    driver: bridge
+
+#volumes:
+#  db_data:
+#    driver: local
+
+
+#  nginx:
+#    container_name: nginx
+#    restart: always
+#    build: ./nginx
+#    ports:
+#      - "80:80"
+#    depends_on:
+#      - cmm-rest
