@@ -1,5 +1,8 @@
+.git
+.gitignore
+.dockerignore
 .DS_Store
-youtubefront/node_modules
+/node_modules
 /dist
 
 # local env files
@@ -44,4 +47,3 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-/server/venv/
