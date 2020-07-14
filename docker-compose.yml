@@ -14,8 +14,6 @@ services:
       - bootstrap_servers=kafka:9092
       - topicname=LiveBusData
       - debugger=True
-#    networks:
-#      - backend
     command: "sh run.sh"
 
   livemap-producer:
@@ -30,8 +28,6 @@ services:
       - bootstrap_servers=kafka:9092
       - topicname=LiveBusData
       - debugger=True
-#    networks:
-#      - backend
     command: "python start_producers.py"
 
 
@@ -39,8 +35,6 @@ services:
     image: "wurstmeister/zookeeper:latest"
     ports:
       - "2181:2181"
-#    networks:
-#      - backend
 
 
   kafka:
@@ -60,8 +54,6 @@ services:
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:9092'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-#    networks:
-#      - backend
 networks:
   default:
     driver: bridge
