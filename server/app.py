@@ -11,13 +11,11 @@ load_config()
 
 app = Flask(__name__)
 CORS(app)
-
-
-
 app.config['DEBUG'] = os.environ.get('debugger')
-@app.route('/')
-def index():
-    return(render_template('index.html'))
+
+# @app.route('/')
+# def index():
+#     return(render_template('index.html'))
 
 #Consumer API
 @app.route('/topic/<topicname>')
@@ -37,10 +35,9 @@ def get_messages(topicname):
             if msg is None:
                 continue
             elif not msg.error():
-
                 yield 'data:{0}\n\n'.format(msg.value().decode())
 
     return Response(events(), mimetype="text/event-stream")
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8081)
+    app.run()

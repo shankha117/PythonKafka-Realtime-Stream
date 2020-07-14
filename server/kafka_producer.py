@@ -14,7 +14,7 @@ class Producers(object):
 
 
     def get_producer_file_path(self, id):
-        return 'server/data/bus' + str(id) + '.json'
+        return 'data/bus' + str(id) + '.json'
 
     def generate_bus_line(self, id):
         return 'SS07' + str(id)
