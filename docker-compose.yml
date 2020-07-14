@@ -69,13 +69,3 @@ networks:
 #volumes:
 #  db_data:
 #    driver: local
-
-
-#  nginx:
-#    container_name: nginx
-#    restart: always
-#    build: ./nginx
-#    ports:
-#      - "80:80"
-#    depends_on:
-#      - cmm-rest
